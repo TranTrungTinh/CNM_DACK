@@ -5,7 +5,9 @@
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.0.17"
+    "react-places-autocomplete": "^5.4.3",
+    "react-scripts": "1.0.17",
+    "sweetalert": "^2.1.0"
   },
   "scripts": {
     "start": "set PORT=3000 && react-scripts start",
