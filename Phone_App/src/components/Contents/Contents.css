@@ -1,0 +1,58 @@
+#order_container {
+  flex: 1;
+  border-radius: 10px;
+  background-color: rgb(192, 243, 168);
+  padding: 10px;
+}
+
+#order_container label {
+  margin-top: 10px;
+  margin-bottom: 2px;
+  font-weight: bold;
+  color: rgb(69, 161, 236);
+}
+
+#order_container button {
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+
+/* toggle bike or car */
+.cc-selector {
+  text-align: center;
+}
+.cc-selector input{
+  margin:0;padding:0;
+  -webkit-appearance:none;
+     -moz-appearance:none;
+          appearance:none;
+}
+.bike{background-image:url('../../images/bike_red.png');}
+.car{background-image:url('../../images/car_red.png');}
+
+.cc-selector input:active +.drinkcard-cc{opacity: .9;}
+.cc-selector input:checked +.drinkcard-cc{
+  -webkit-filter: none;
+     -moz-filter: none;
+          filter: none;
+}
+.drinkcard-cc{
+  cursor:pointer;
+  background-size:contain;
+  background-repeat:no-repeat;
+  display:inline-block;
+  width:100px;height:70px;
+  -webkit-transition: all 100ms ease-in;
+     -moz-transition: all 100ms ease-in;
+          transition: all 100ms ease-in;
+  -webkit-filter: brightness(1.8) grayscale(1) opacity(.7);
+     -moz-filter: brightness(1.8) grayscale(1) opacity(.7);
+          filter: brightness(1.8) grayscale(1) opacity(.7);
+}
+.drinkcard-cc:hover{
+  -webkit-filter: brightness(1.2) grayscale(.5) opacity(.9);
+     -moz-filter: brightness(1.2) grayscale(.5) opacity(.9);
+          filter: brightness(1.2) grayscale(.5) opacity(.9);
+}
+/* end toggle bike or car */
