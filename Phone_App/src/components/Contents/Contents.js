@@ -55,11 +55,11 @@ export default class Contents extends Component {
     const {address} = this.state;
     geocodeByAddress(address)
     .then(results => getLatLng(results[0]))
-    .then(({lat , lng}) => {
-      const checkLat = 10.5 < lat && lat < 10.8 ? true : false;
+    .then(({lat , lng}) => { 
+      const checkLat = 10.5 < lat && lat < 11 ? true : false;
       const checkLng = 106.5 < lng && lng < 106.8 ? true : false;
       if(checkLat && checkLng) this.setState({lat , lng});
-    });
+    }).catch(() => {});
   }
 
   handleVehicle() {
@@ -72,12 +72,18 @@ export default class Contents extends Component {
   }
 
   handleBooking() {
-    const {lat , lng} = this.state;
-    if(!lat && !lng) return swal("FAIL","Chỉ chấp nhận địa chỉ trong TPHCM","error");
+    const {address , lat , lng} = this.state;
+    if(!address) return swal("FAIL","Vui lòng nhập địa chỉ","error");
+    if(!lat || !lng) return swal("FAIL","Chỉ chấp nhận địa chỉ trong TPHCM","error");
     axios.post('/api/order' , this.state)
     .then(({ data }) => {
       if(data.error) return swal('FAIL', data.error , 'error');
-      swal('SUCCESS' , 'Đặt xe thành công' , 'success');
+      swal('SUCCESS' , 'Đặt xe thành công' , 'success')
+      .then(() => {
+        this.setState({phone:'',address:'',bike: false,other:null,lat:null,lng:null,state:false});
+        this.refs.phone.value = '';
+        this.refs.otherDetails.value = '';
+      })
     });
   }
 

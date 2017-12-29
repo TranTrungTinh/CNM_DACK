@@ -10,6 +10,7 @@ server.listen(4200, () => console.log('Server has been started port 4200'));
 
 // Driver
 const Driver = require('./model/Drivers');
+const db = require('./model/Config');
 
 // api
 app.post('/api/order' , jsonParser , (req , res) => {
@@ -27,4 +28,16 @@ io.on('connection' , socket => {
     Driver.getAllDriver()
     .then(data => socket.emit('SEND_ALL_DRIVER' , data));
   });
-})
+
+  // realtime child_added
+  db.ref('users').on('child_added' , user => {
+    // console.log(user.key , user.val());
+    const { state } = user.val();
+    if (!state) {
+      const rider = { key: user.key, ...user.val() };
+      socket.emit('SEND_NEW_RIDER', rider);
+    }
+    
+  });
+
+});

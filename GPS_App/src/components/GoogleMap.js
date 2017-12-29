@@ -4,7 +4,7 @@ import './GoogleMap.css';
 // import library
 import {socket} from '../socketClient';
 import {createDriverMarker} from '../markers/DriverMarker';
-
+import {createRiderMarker} from '../markers/RiderMarker';
 // Defind global
 const google = window.google;
 
@@ -13,7 +13,8 @@ export default class GoogleMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      arrVehicle: []
+      arrVehicle: [],
+      arrRider: []
     }
   }
 
@@ -197,7 +198,12 @@ export default class GoogleMap extends Component {
       drivers.forEach(driver => {
         createDriverMarker(driver , map , this.state.arrVehicle);
       });
+    });
 
+    // When user order car
+    socket.on('SEND_NEW_RIDER', rider => {
+      console.log("OK");
+      createRiderMarker(rider , map , this.state.arrRider);
     });
   }
 
