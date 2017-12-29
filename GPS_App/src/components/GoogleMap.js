@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './GoogleMap.css';
+import {socket} from '../socketClient';
 
 // Defind global
 const google = window.google;
@@ -178,6 +179,11 @@ export default class GoogleMap extends Component {
       ]
     }
     const map = new google.maps.Map(this.refs.map , mapOptions);
+
+    socket.emit('GET_ALL_DRIVER');
+    socket.on('SEND_ALL_DRIVER' , data => {
+      console.log(data);
+    });
   }
 
   render() {
