@@ -177,7 +177,7 @@ export default class GoogleMap extends Component {
         }
       ]
     }
-    new google.maps.Map(this.refs.map , mapOptions);
+    const map = new google.maps.Map(this.refs.map , mapOptions);
   }
 
   render() {
