@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
 import './GoogleMap.css';
 import {socket} from '../socketClient';
-
+import {createDriverMarker} from '../markers/DriverMarker';
 // Defind global
 const google = window.google;
+
+// Driver marker
+
+
+
 export default class GoogleMap extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      arrVehicle: []
+    }
+  }
 
   shouldComponentUpdate() {
     return false;
@@ -181,8 +193,12 @@ export default class GoogleMap extends Component {
     const map = new google.maps.Map(this.refs.map , mapOptions);
 
     socket.emit('GET_ALL_DRIVER');
-    socket.on('SEND_ALL_DRIVER' , data => {
-      console.log(data);
+    socket.on('SEND_ALL_DRIVER' , drivers => {
+      // console.log(data);
+      drivers.forEach(driver => {
+        createDriverMarker(driver , map , this.state.arrVehicle);
+      });
+
     });
   }
 

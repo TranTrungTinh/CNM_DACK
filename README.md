@@ -3,7 +3,8 @@
 
 # CNM_FINAL_PROJECT
 
-Mini project clone Uber app with React 
+Mini project clone Uber app with React
+ 
 Example project using Google Maps API with Nodejs + Socket.io + Firebase
 
 ## Installation
