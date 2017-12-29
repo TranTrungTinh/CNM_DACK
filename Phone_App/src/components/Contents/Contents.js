@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+
+// import library
 import swal from 'sweetalert';
+import axios from 'axios';
 import PlacesAutocomplete from 'react-places-autocomplete'
 import {geocodeByAddress , getLatLng} from 'react-places-autocomplete';
 // import css
@@ -14,11 +17,13 @@ export default class Contents extends Component {
       bike: false,
       other: null,
       lat: null,
-      lng: null
+      lng: null,
+      state: false // chua duoc dinh vi
     };
 
     this.handlePhoneInput = this.handlePhoneInput.bind(this);
     this.handlePhoneBlur = this.handlePhoneBlur.bind(this);
+    this.handleAddressBlur = this.handleAddressBlur.bind(this);
     this.handleAddressInput = this.handleAddressInput.bind(this);
     this.handleVehicle = this.handleVehicle.bind(this);
     this.handleOtherDetail = this.handleOtherDetail.bind(this);
@@ -46,6 +51,17 @@ export default class Contents extends Component {
     this.setState({ address });
   }
 
+  handleAddressBlur() {
+    const {address} = this.state;
+    geocodeByAddress(address)
+    .then(results => getLatLng(results[0]))
+    .then(({lat , lng}) => {
+      const checkLat = 10.5 < lat && lat < 10.8 ? true : false;
+      const checkLng = 106.5 < lng && lng < 106.8 ? true : false;
+      if(checkLat && checkLng) this.setState({lat , lng});
+    });
+  }
+
   handleVehicle() {
     const bike = this.refs.bike.checked;
     this.setState({ bike });
@@ -56,24 +72,20 @@ export default class Contents extends Component {
   }
 
   handleBooking() {
-    const {address} = this.state;
-    geocodeByAddress(address)
-    .then(results => getLatLng(results[0]))
-    .then(({lat , lng}) => {
-      const checkLat = 10.5 < lat && lat < 10.8 ? true : false;
-      const checkLng = 106.5 < lng && lng < 106.8 ? true : false;
-      if(!checkLat && !checkLng) return swal("FAIL","Địa chỉ không chính xác","error");
-      this.setState({lat , lng});
-      
-    console.log(this.state);
-    })
-    .catch(() => swal("WARNING","Vui lòng chọn địa chỉ","warning"));
+    const {lat , lng} = this.state;
+    if(!lat && !lng) return swal("FAIL","Chỉ chấp nhận địa chỉ trong TPHCM","error");
+    axios.post('/api/order' , this.state)
+    .then(({ data }) => {
+      if(data.error) return swal('FAIL', data.error , 'error');
+      swal('SUCCESS' , 'Đặt xe thành công' , 'success');
+    });
   }
 
   render() {
     const inputProps = {
       value: this.state.address,
       onChange: this.handleAddressInput,
+      onBlur: this.handleAddressBlur,
       type: "text",
       placeholder: "Enter address"
     }

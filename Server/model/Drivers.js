@@ -11,6 +11,10 @@ class Driver {
     });
     return arrDrivers;
   }
+  static addUser(objUser) {
+    const { phone , address , lat , lng , bike , other , state } = objUser;
+    db.ref('users').push({phone , address , lat , lng , bike , other , state});
+  }
 }
 
 module.exports = Driver;

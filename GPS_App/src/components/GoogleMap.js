@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import './GoogleMap.css';
+
+// import library
 import {socket} from '../socketClient';
 import {createDriverMarker} from '../markers/DriverMarker';
+
 // Defind global
 const google = window.google;
-
-// Driver marker
-
-
 
 export default class GoogleMap extends Component {
 
