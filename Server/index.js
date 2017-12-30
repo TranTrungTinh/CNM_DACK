@@ -23,21 +23,31 @@ app.post('/api/order' , jsonParser , (req , res) => {
 
 io.on('connection' , socket => {
   
+  /* Socket with GPS APP */
   // Get all driver
   socket.on('GET_ALL_DRIVER' , () => {
     Driver.getAllDriver()
     .then(data => socket.emit('SEND_ALL_DRIVER' , data));
   });
+  /* ============================== */
+  /* Socket with GPS APP */
+  
+
+  /* ============================== */
 
   // realtime child_added
   db.ref('users').on('child_added' , user => {
     // console.log(user.key , user.val());
-    const { state } = user.val();
-    if (!state) {
-      const rider = { key: user.key, ...user.val() };
-      socket.emit('SEND_NEW_RIDER', rider);
-    }
-    
+    // const { state } = user.val();
+    // if (!state) {
+    const rider = { key: user.key, ...user.val() };
+    socket.emit('SEND_NEW_RIDER', rider);
+    // }
   });
+
+  db.ref('users').on('child_changed', user => {
+    const rider = { key: user.key, ...user.val() };
+    socket.emit('SEND_UPDATE_RIDER', rider);
+  })
 
 });

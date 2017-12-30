@@ -5,6 +5,7 @@ import './App.css';
 import Header from './components/Header/Header';
 import Title from './components/Content/Title/Title';
 import Content from './components/Content/Content';
+import GoogleMap from './components/GoogleMap/GoogleMap';
 
 class App extends Component {
   render() {
@@ -13,6 +14,7 @@ class App extends Component {
         <Header />
         <Title />
         <Content />
+        <GoogleMap />
       </div>
     );
   }
