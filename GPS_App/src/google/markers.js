@@ -123,7 +123,5 @@ export function createRiderMarker(rider , map) {
     const cacheData = { driver: selectedCar.vehicle, rider: riderMarker, id: key };
     arrCacheData.push(cacheData);    
   });
-
-  
  
 }

@@ -1,58 +1,51 @@
 /* custom infowindow */
 .info-box-wrap {
-    background:#fff;
-    overflow: hidden;
-    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.08);
-    margin: 0;
-    padding: 0;
-  }
-  .info-box-text-wrap {
-    height:50px !important;
-    width:120px;
-    float:left;
-    overflow: hidden;
-  }
-  .action-btns {
-    float:left;
-    width:90px;
-    overflow: hidden;
-    position: relative;
-    top:16px;
-  }
-   .action-btns button {
-    font-size: 10px;
-    margin-left: 10px;
-  }
-  .action-btns button:hover {
-    transition: color 0.5s ease;
-    cursor: pointer;
-  }
+  background:#fff;
+  overflow: hidden;
+  box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.08);
+  margin: 0;
+  padding: 0;
+}
+.info-box-text-wrap {
+  height:50px !important;
+  width:120px;
+  float:left;
+  overflow: hidden;
+}
+.action-btns {
+  float:left;
+  width:90px;
+  overflow: hidden;
+  position: relative;
+  top:16px;
+}
+
+
+.info-box-text-wrap h6.address {
+  padding:6px 5px 1px 0;
+  margin:0;
+  font-family:"Roboto Slab";
+  color: #0c99c8;
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.info-box-text-wrap p {
+  padding-top: 2px;
+  margin:0;
+}
+.info-box-text-wrap p.price {
+  color:#B25B00;
+  font-size: 10px;
+}
   
-  .info-box-text-wrap h6.address {
-    padding:6px 5px 1px 0;
-    margin:0;
-    font-family:"Roboto Slab";
-    color: #0c99c8;
-    font-weight: 700;
-    font-size: 14px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .info-box-text-wrap p {
-    padding-top: 2px;
-    margin:0;
-  }
-  .info-box-text-wrap p.price {
-    color:#B25B00;
-    font-size: 10px;
-  }
-   
-  .info-box-wrap  img {
-    width:50px !important;
-    height:50px;
-    float:left;
-    margin-right: 8px;
-    padding-top:0;
-    margin-top:0;
-  }
+.info-box-wrap  img {
+  width:50px !important;
+  height:50px;
+  float:left;
+  margin-right: 8px;
+  padding-top:0;
+  margin-top:0;
+}
