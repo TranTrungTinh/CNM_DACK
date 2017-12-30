@@ -11,9 +11,20 @@ class Driver {
     });
     return arrDrivers;
   }
+
   static addUser(objUser) {
-    // const { phone , address , lat , lng , bike , other , state } = objUser;
     db.ref('users').push(objUser);
+  }
+
+  static async logIn(rawUsername , rawPassword) {
+    const drivers = await db.ref('cars').once('value');
+    drivers.forEach(driver => {
+      const {username , password , name} = driver.val();
+      if(rawUsername === username && rawPassword === password) {
+        return name;
+      }
+    });
+    throw new Error('Wrong username or password');
   }
 }
 

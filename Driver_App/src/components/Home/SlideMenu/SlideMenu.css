@@ -1,0 +1,61 @@
+.slide-menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.slide-menu img {
+  position: fixed;
+  top: 26px;
+  right: 26px;
+  width: 40px;
+  height: 40px;
+}
+
+.slide-menu-title {
+  font-size: 20px;
+  font-weight: bold;
+  position: fixed;
+  top: 46px;
+  left: 50%;
+  transform: translate(-50% , -50%);
+}
+
+/* Position and sizing of burger button */
+.bm-burger-button {
+  position: fixed;
+  width: 28px;
+  height: 22px;
+  left: 30px;
+  top: 36px;
+}
+
+/* Color/shape of burger icon bars */
+.bm-burger-bars {
+  background: #373a47 ;
+}
+
+/* Position and sizing of clickable cross button */
+.bm-cross-button {
+  height: 24px;
+  width: 24px;
+}
+
+/* Color/shape of close button cross */
+.bm-cross {
+  background: #bdc3c7;
+}
+
+.welcome {
+  text-align: center;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.name {
+  text-align: center;
+  font-size: 16px;
+}
+
+.slide-menu button {
+  width: 100%;
+}

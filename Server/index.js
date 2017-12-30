@@ -3,23 +3,16 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const jsonParser = require('body-parser').json();
 
 // connect
 server.listen(4200, () => console.log('Server has been started port 4200'));
 
-// Driver
-const Driver = require('./model/Drivers');
+// API Route
+const apiRouteDriver = require('./controller/router');
 const db = require('./model/Config');
+const Driver = require('./model/Drivers');
 
-// api
-app.post('/api/order' , jsonParser , (req , res) => {
-  const {phone , address } = req.body;
-  if(!phone || !address) res.send({error: error.message});
-  Driver.addUser(req.body);
-  res.send({message: "OK"});
-});
-
+app.use('/api' , apiRouteDriver);
 
 io.on('connection' , socket => {
   
