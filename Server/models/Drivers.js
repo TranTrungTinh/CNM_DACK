@@ -7,7 +7,7 @@ class Driver {
     drivers.forEach(e => {
       const {state , name , username , lat , lng} = e.val();
       if(state) return;
-      const driver = {id: e.key, state , name , username , lat , lng}
+      const driver = {id: e.key , name , username , lat , lng}
       arrDrivers.push(driver);
     });
     return arrDrivers;

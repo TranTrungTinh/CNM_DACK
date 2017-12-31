@@ -9,7 +9,7 @@ let curentDriverWindow = false // toggle window info driver
 // store data
 const arrVehicle = []; // store position and data driver
 const arrRider = []; // store position and data rider
-const arrCacheData = []; // store cache position rider and position driver
+// const arrCacheData = []; // store cache position rider and position driver
 /* ================================================================================== */
 
 /* ========= Driver Marker ========== */
@@ -99,13 +99,13 @@ export function createRiderMarker(rider , map) {
   riderMarker.addListener('dblclick', () => {
     if (beforePosition) riderMarker.setPosition(beforePosition);
     // load cache data
-    const cacheDriver = arrCacheData.find(e => e.id === key);
-    if (cacheDriver) {
-      const { driver, rider } = cacheDriver;
-      calculateAndDisplayRoute(driver, rider, map);
-      info.close();
-      return 0;
-    }
+    // const cacheDriver = arrCacheData.find(e => e.id === key);
+    // if (cacheDriver) {
+    //   const { driver, rider } = cacheDriver;
+    //   calculateAndDisplayRoute(driver, rider, map);
+    //   info.close();
+    //   return 0;
+    // }
 
     const positionUser = riderMarker.getPosition();
     const arrDistance = arrVehicle.map(e => {
@@ -121,11 +121,10 @@ export function createRiderMarker(rider , map) {
     calculateAndDisplayRoute(selectedCar.vehicle, riderMarker, map);
 
     // cache data to improve performent
-    const cacheData = { driver: selectedCar.vehicle, rider: riderMarker, id: key };
-    arrCacheData.push(cacheData);   
+    // const cacheData = { driver: selectedCar.vehicle, rider: riderMarker, id: key };
+    // arrCacheData.push(cacheData);   
     
     const dataSend = {driver: selectedCar.data, userKey: key , rider};
-    console.log(dataSend);
     socket.emit('RIDER_SELECTED_DRIVER', dataSend);
   });
  

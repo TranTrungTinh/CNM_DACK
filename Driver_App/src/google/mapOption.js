@@ -1,6 +1,7 @@
 const google = window.google;
-const myLocation = new google.maps.LatLng(10.8230989, 106.6296638);
-export const mapOptions = {
+export function createMap(lat , lng) {
+  const myLocation = new google.maps.LatLng(+lat, +lng);
+  const mapOptions = {
       center: myLocation,
       zoom: 13,
       zoomControl: false,
@@ -166,3 +167,6 @@ export const mapOptions = {
         }
       ]
     }
+  return mapOptions;
+}
+
