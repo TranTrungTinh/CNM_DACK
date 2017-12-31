@@ -1,3 +1,4 @@
+
 // import library
 const express = require('express');
 const app = express();
@@ -12,40 +13,44 @@ const apiDriver = require('./controlles/router');
 // api
 app.use('/api', apiDriver);
 
-// middleware
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Credentials', true);
-//   res.header('Access-Control-Allow-Methods', 'GET,POST');
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
-
-
 // connect
 server.listen(4200, () => console.log('Server has been started port 4200'));
 
-
-
-
-
-
+const currentDriver = [] // store driver log in
 
 io.on('connection' , socket => {
   
+  console.log(socket.id);
+
   /* Socket with GPS APP */
   // Get all driver
   socket.on('GET_ALL_DRIVER' , () => {
     Driver.getAllDriver()
     .then(data => socket.emit('SEND_ALL_DRIVER' , data));
   });
+ 
+  socket.on('RIDER_SELECTED_DRIVER', driver => {
+    // console.log(driver);
+    // const {id} = driver;
+
+  })
+
   /* ============================== */
-  /* Socket with GPS APP */
+  /* Socket with DRIVER APP */
+
+  socket.on('DRIVER_LOG_IN', idDriver => {
+    currentDriver.push(idDriver);
+    // console.log(idDriver);
+  })
+
+  socket.on('DRIVER_LOG_OUT', idDriver => {
+    const index = currentDriver.findIndex(e => e == idDriver);
+    currentDriver.splice(index , 1);
+  })
+
+  /* ============================== */
   
-
-  /* ============================== */
-
-  // realtime child_added
+  /* Socket with MANAGE APP */
   db.ref('users').on('child_added' , user => {
     // console.log(user.key , user.val());
     // const { state } = user.val();
@@ -58,6 +63,11 @@ io.on('connection' , socket => {
   db.ref('users').on('child_changed', user => {
     const rider = { key: user.key, ...user.val() };
     socket.emit('SEND_UPDATE_RIDER', rider);
-  })
+  });
 
+  socket.on('disconnect' , () => {
+    console.log(socket.id);
+  });
+  
 });
+

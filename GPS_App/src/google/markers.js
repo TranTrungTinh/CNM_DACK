@@ -1,5 +1,6 @@
 /* Global variable */
 import {calculateAndDisplayRoute} from './drawDirection';
+import {socket} from '../socketClient';
 
 const google = window.google;  // google maps api
 let curentWindow = false; // toggle window info rider
@@ -121,7 +122,9 @@ export function createRiderMarker(rider , map) {
 
     // cache data to improve performent
     const cacheData = { driver: selectedCar.vehicle, rider: riderMarker, id: key };
-    arrCacheData.push(cacheData);    
+    arrCacheData.push(cacheData);   
+    
+    socket.emit('RIDER_SELECTED_DRIVER', {driver: selectedCar.data, userKey: key});
   });
  
 }

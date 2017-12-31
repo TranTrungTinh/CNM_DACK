@@ -5,9 +5,10 @@ class Driver {
     const arrDrivers = [];
     const drivers = await db.ref('cars').once('value');
     drivers.forEach(e => {
-      const {state} = e.val();
+      const {state , name , username , lat , lng} = e.val();
       if(state) return;
-      arrDrivers.push({ id: e.key , ...e.val() });
+      const driver = {id: e.key, state , name , username , lat , lng}
+      arrDrivers.push(driver);
     });
     return arrDrivers;
   }

@@ -3,7 +3,7 @@ import './SignIn.css';
 import {Redirect} from 'react-router-dom';
 
 import axios from 'axios';
-import swal from 'sweetalert';
+import swal from 'sweetalert2';
 import {connect} from 'react-redux';
 import * as actionCreators from '../../redux/actionCreators';
 
