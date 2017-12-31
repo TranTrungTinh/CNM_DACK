@@ -18,13 +18,16 @@ class Driver {
 
   static async logIn(rawUsername , rawPassword) {
     const drivers = await db.ref('cars').once('value');
+    let isDriver = null;
     drivers.forEach(driver => {
-      const {username , password , name} = driver.val();
-      if(rawUsername === username && rawPassword === password) {
-        return name;
+      const { username , password , name , state , lat , lng} = driver.val();
+      if(rawUsername == username && rawPassword == password) {
+        isDriver = {id: driver.key , name , state , lat , lng};
+        return;        
       }
     });
-    throw new Error('Wrong username or password');
+    if(!isDriver) throw new Error('Wrong username or password');
+    return isDriver;
   }
 }
 

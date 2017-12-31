@@ -4,15 +4,32 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
+// API Route
+const db = require('./models/Config');
+const Driver = require('./models/Drivers');
+const apiDriver = require('./controlles/router');
+
+// api
+app.use('/api', apiDriver);
+
+// middleware
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Credentials', true);
+//   res.header('Access-Control-Allow-Methods', 'GET,POST');
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
+
+
 // connect
 server.listen(4200, () => console.log('Server has been started port 4200'));
 
-// API Route
-const apiRouteDriver = require('./controller/router');
-const db = require('./model/Config');
-const Driver = require('./model/Drivers');
 
-app.use('/api' , apiRouteDriver);
+
+
+
+
 
 io.on('connection' , socket => {
   

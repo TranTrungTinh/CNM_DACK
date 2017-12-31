@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
-
+import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 // components
 import GoogleMap from './GoogleMap/GoogleMap';
-import Header from './Header/Header';
+import Status from './Status/Status';
+import SlideMenu from './SlideMenu/SlideMenu';
 
-export default class Home extends Component {
+
+class Home extends Component {
   render() {
+    const {name} = this.props.driver;
+    const redirect = name ? null : <Redirect to="/" />;
     return (
       <div className="home" >
-        <Header />
+        {redirect}
+        <Status />
+        <SlideMenu name={name} />
         <GoogleMap />
       </div>
     );
   }
 }
+const mapStateToProp = (state) => ({
+  driver: state.profile
+});
+export default connect(mapStateToProp)(Home);

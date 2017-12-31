@@ -1,22 +1,23 @@
 const router = require('express').Router();
 const jsonParser = require('body-parser').json();
+const Driver = require('../models/Drivers');
 
-// class Driver
-const Driver = require('../model/Drivers');
+// API
+router.get('/' , (req , res) => res.status(200).send('Welcome to connect server'));
 
-// api
 router.post('/order' , jsonParser , (req , res) => {
-  const {phone , address } = req.body;
+  const {phone , address} = req.body;
   if(!phone || !address) res.send({error: error.message});
   Driver.addUser(req.body);
   res.send({message: "OK"});
 });
 
-router.post('/driver/login', jsonParser , (req , res) => {
+router.post('/login', jsonParser , (req , res) => {
   const {username , password} = req.body;
   Driver.logIn(username , password)
-  .then(name => res.send({name}))
-  .catch(error => res.send({error: error.message}));
+  .then( driver => res.send({ driver }) )
+  .catch( error => res.send({ error: error.message }) );
 });
+
 
 module.exports = router;
