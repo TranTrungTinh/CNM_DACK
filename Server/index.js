@@ -20,7 +20,7 @@ const currentDriver = [] // store driver log in
 
 io.on('connection' , socket => {
   
-  console.log(socket.id);
+  // console.log(socket.id);
 
   /* Socket with GPS APP */
   // Get all driver
@@ -29,24 +29,28 @@ io.on('connection' , socket => {
     .then(data => socket.emit('SEND_ALL_DRIVER' , data));
   });
  
-  socket.on('RIDER_SELECTED_DRIVER', driver => {
-    // console.log(driver);
-    // const {id} = driver;
+  socket.on('RIDER_SELECTED_DRIVER', data => {
+    // console.log(data);
+    const { driver , rider } = data;
+    const idDriver = driver.id;
+    const index = currentDriver.findIndex(e => e.idDriver === idDriver);
+    const { id } = currentDriver[index];
+    socket.to(id).emit('SEVER_SEND_RIDER' , {rider});
 
-  })
+  });
 
   /* ============================== */
   /* Socket with DRIVER APP */
 
   socket.on('DRIVER_LOG_IN', idDriver => {
-    currentDriver.push(idDriver);
-    // console.log(idDriver);
-  })
+    socket.idDriver = idDriver;
+    currentDriver.push(socket);
+  });
 
   socket.on('DRIVER_LOG_OUT', idDriver => {
-    const index = currentDriver.findIndex(e => e == idDriver);
+    const index = currentDriver.findIndex(e => e.idDriver === idDriver);
     currentDriver.splice(index , 1);
-  })
+  });
 
   /* ============================== */
   
@@ -65,9 +69,9 @@ io.on('connection' , socket => {
     socket.emit('SEND_UPDATE_RIDER', rider);
   });
 
-  socket.on('disconnect' , () => {
-    console.log(socket.id);
-  });
+  // socket.on('disconnect' , () => {
+  //   // console.log(socket.id);
+  // });
   
 });
 

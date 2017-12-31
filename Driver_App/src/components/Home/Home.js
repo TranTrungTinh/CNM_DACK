@@ -15,6 +15,10 @@ class Home extends Component {
   componentDidMount() {
     const {id} = this.props.driver;
     socket.emit('DRIVER_LOG_IN', id);
+
+    socket.on('SEVER_SEND_RIDER', riderData => {
+      console.log(riderData);
+    });
   }
 
   render() {

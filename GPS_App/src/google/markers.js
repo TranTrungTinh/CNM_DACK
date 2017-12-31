@@ -124,7 +124,9 @@ export function createRiderMarker(rider , map) {
     const cacheData = { driver: selectedCar.vehicle, rider: riderMarker, id: key };
     arrCacheData.push(cacheData);   
     
-    socket.emit('RIDER_SELECTED_DRIVER', {driver: selectedCar.data, userKey: key});
+    const dataSend = {driver: selectedCar.data, userKey: key , rider};
+    console.log(dataSend);
+    socket.emit('RIDER_SELECTED_DRIVER', dataSend);
   });
  
 }
