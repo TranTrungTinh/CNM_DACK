@@ -2,6 +2,7 @@
 import {calculateAndDisplayRoute} from './drawDirection';
 import {socket} from '../socketClient';
 import {findFiveCar} from './findCarforUser';
+import swal from 'sweetalert2';
 
 const google = window.google;  // google maps api
 let curentWindow = false; // toggle window info rider
@@ -114,6 +115,29 @@ export function drawDirection(idDriver , idRider , map) {
   const indexRider = arrRider.findIndex(e => e.id === idRider);
   const riderPos = arrRider[indexRider].pos;
   
+  // draw position
   calculateAndDisplayRoute(driverPos, riderPos, map);
+
+  // delete data in array
+  arrVehicle.splice(indexDriver , 1);
+  arrRider.splice(indexRider , 1);
+}
+
+export function riderNotPickUp(data) {
+  const {id , address} = data;
+  const index = arrRider.findIndex(e => e.id === id);
+  const { pos } = arrRider[index];
+  swal({
+    title: 'THÔNG BÁO',
+    text: `Địa chỉ: ${address} KHÔNG CÓ XE !!!`,
+    timer: 5000,
+    type: 'info',
+    onOpen: () => {
+      swal.showLoading();
+    }
+  });
+  pos.setMap(null);
+  arrRider.splice(index , 1);
+  
 }
 

@@ -15,6 +15,10 @@ export default class Title extends Component {
           <img src={car} alt="" className="image" />
           <p>Users have been already picked up</p>
         </div>
+        <div className="col title">
+          <img src={car} alt="" className="image" />
+          <p>Users have been already picked up</p>
+        </div>
       </div>
     );
   }

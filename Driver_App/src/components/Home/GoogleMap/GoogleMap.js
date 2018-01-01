@@ -28,14 +28,13 @@ export default class GoogleMap extends Component {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Chấp nhận đón'
+        confirmButtonText: 'Chấp nhận'
       }).then(result => {
         if (result.dismiss === 'timer' || result.dismiss === 'cancel'){
-
+          const data = {id: riderData.key , address: riderData.address};
+          socket.emit('DRIVER_CANCEL', data);
         }
-          // socket.emit('DRIVER_CANCEL');
         else{
-          // console.log(riderData);
           socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.key});
           const rMarker = riderMarker(riderData , map);
           drawDirection(dMarker , rMarker, map);
