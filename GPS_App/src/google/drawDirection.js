@@ -30,6 +30,16 @@ export function calculateAndDisplayRoute(vehiclePosMarker , userPosMarker , map)
     const info = new google.maps.InfoWindow({content});
     info.setPosition(pos);
     info.open(map);
-    // setTimeout(() => info.close(),4000);
+    setTimeout(() => {
+      vehiclePosMarker.setMap(null);
+      userPosMarker.setMap(null);
+      info.close();
+      directionsDisplay.setMap(null);
+    }, 5000);
+    // map.addListener('click', () => {
+  //   vehiclePosMarker.setMap(null);
+  //   userPosMarker.setMap(null);
+  //   directionsDisplay.setMap(null);
+  // });
   });
 } // end handle direction

@@ -20,9 +20,5 @@ export function drawDirection(vehiclePosMarker , userPosMarker , map) {
     if (status !== 'OK') return;
     directionsDisplay.setDirections(resp);
   });
-  // map.addListener('click', () => {
-  //   vehiclePosMarker.setMap(null);
-  //   userPosMarker.setMap(null);
-  //   directionsDisplay.setMap(null);
-  // });
+  
 } // end handle direction

@@ -5,7 +5,8 @@ import './GoogleMap.css';
 import {socket} from '../socketClient';
 import {
   createDriverMarker,
-  createRiderMarker
+  createRiderMarker,
+  drawDirection
 } from '../google/markers';
 import {mapOptions} from '../google/mapOption';
 // Defind global
@@ -32,6 +33,11 @@ export default class GoogleMap extends Component {
     // When user order car
     socket.on('SEND_NEW_RIDER', rider => {
       createRiderMarker(rider , map);
+    });
+
+    // When user has been pick up
+    socket.on('CLOSE_NOTIFICATION', ({idDriver , idRider}) => {
+      drawDirection(idDriver , idRider , map);
     });
   }
 

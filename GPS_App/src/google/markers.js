@@ -1,6 +1,7 @@
 /* Global variable */
 import {calculateAndDisplayRoute} from './drawDirection';
 import {socket} from '../socketClient';
+import {findFiveCar} from './findCarforUser';
 
 const google = window.google;  // google maps api
 let curentWindow = false; // toggle window info rider
@@ -83,7 +84,7 @@ export function createRiderMarker(rider , map) {
   });
 
   const info = new google.maps.InfoWindow({ content });
-  // handle event click rider
+  // handle view info rider
   riderMarker.addListener('click', () => {
     riderMarker.setAnimation(null);
     
@@ -98,34 +99,21 @@ export function createRiderMarker(rider , map) {
   // handle call driver
   riderMarker.addListener('dblclick', () => {
     if (beforePosition) riderMarker.setPosition(beforePosition);
-    // load cache data
-    // const cacheDriver = arrCacheData.find(e => e.id === key);
-    // if (cacheDriver) {
-    //   const { driver, rider } = cacheDriver;
-    //   calculateAndDisplayRoute(driver, rider, map);
-    //   info.close();
-    //   return 0;
-    // }
 
-    const positionUser = riderMarker.getPosition();
-    const arrDistance = arrVehicle.map(e => {
-      const positionCar = e.pos.getPosition();
-      const distance = google.maps.geometry.spherical.computeDistanceBetween(positionUser, positionCar);
-      return { distance, vehicle: e.pos, data: e.driver };
-    });
-
-    const selectedCar = arrDistance.sort((a, b) => a.distance - b.distance)[0];
-    // display route in map
-    selectedCar.vehicle.setIcon('./images/car_red.png');
-    riderMarker.setIcon('./images/user_true.png');
-    calculateAndDisplayRoute(selectedCar.vehicle, riderMarker, map);
-
-    // cache data to improve performent
-    // const cacheData = { driver: selectedCar.vehicle, rider: riderMarker, id: key };
-    // arrCacheData.push(cacheData);   
-    
-    const dataSend = {driver: selectedCar.data, userKey: key , rider};
+    const fiveCar = findFiveCar(riderMarker , arrVehicle); 
+    const driversID = fiveCar.map(e => e.data.id); 
+    const dataSend = {driversID , rider};
     socket.emit('RIDER_SELECTED_DRIVER', dataSend);
+    
   });
- 
 }
+
+export function drawDirection(idDriver , idRider , map) {
+  const indexDriver = arrVehicle.findIndex(e => e.driver.id === idDriver);
+  const driverPos = arrVehicle[indexDriver].pos;
+  const indexRider = arrRider.findIndex(e => e.id === idRider);
+  const riderPos = arrRider[indexRider].pos;
+  
+  calculateAndDisplayRoute(driverPos, riderPos, map);
+}
+

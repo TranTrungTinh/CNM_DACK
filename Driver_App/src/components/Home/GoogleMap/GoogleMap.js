@@ -29,17 +29,25 @@ export default class GoogleMap extends Component {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Chấp nhận đón'
-        // onOpen: () => {
-        //   swal.showLoading()
-        // }
       }).then(result => {
-        if (result.dismiss === 'timer') {
-          console.log("CANCEL");
+        if (result.dismiss === 'timer' || result.dismiss === 'cancel'){
+
         }
-        if(result.value) {
+          // socket.emit('DRIVER_CANCEL');
+        else{
+          // console.log(riderData);
+          socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.key});
           const rMarker = riderMarker(riderData , map);
           drawDirection(dMarker , rMarker, map);
         }
+      })
+    });
+    socket.on('CLOSE_NOTIFICATION', () => {
+      swal({
+        type: 'success',
+        title: 'Welcome',
+        showConfirmButton: false,
+        timer: 500
       })
     });
   }

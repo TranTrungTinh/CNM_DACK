@@ -18,6 +18,7 @@ server.listen(4200, () => console.log('Server has been started port 4200'));
 
 // const arrSocket = []; // store current socket connect
 const currentDriver = []; // store driver log in
+let oneAccept = 0; // check one accept driver
 
 io.on('connection' , socket => {
   
@@ -30,13 +31,14 @@ io.on('connection' , socket => {
   });
  
   socket.on('RIDER_SELECTED_DRIVER', data => {
-    const { driver , rider } = data;
-    const idDriver = driver.id;
-    // console.log("Rider selected driver:" + idDriver);
-    const index = currentDriver.findIndex(e => e.idDriver == idDriver);
-    if(index < 0) return; 
-    const { id } = currentDriver[index];
-    socket.to(id).emit('SEVER_SEND_RIDER' , rider);
+    const { driversID , rider } = data;
+    oneAccept = 1; // toggle
+    driversID.forEach(idDriver => {
+      const index = currentDriver.findIndex(e => e.idDriver == idDriver);
+      if(index < 0) return; 
+      const { id } = currentDriver[index];
+      socket.to(id).emit('SEVER_SEND_RIDER' , rider);
+    });
   });
 
   /* ============================== */
@@ -51,6 +53,18 @@ io.on('connection' , socket => {
   socket.on('DRIVER_LOG_OUT', idDriver => {
     const index = currentDriver.findIndex(e => e.idDriver == idDriver);
     currentDriver.splice(index , 1);
+  });
+
+  
+  socket.on('DRIVER_ACCEPT', data => {
+    if(oneAccept === 1){
+      socket.broadcast.emit('CLOSE_NOTIFICATION', data);
+      oneAccept = 0; // not accept secondary
+    }
+  });
+
+  socket.on('DRIVER_CANCEL', () => {
+    socket.emit('CHOOSE_ANOTHER_DRIVER');
   });
 
   /* ============================== */
