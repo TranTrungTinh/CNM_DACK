@@ -51,7 +51,7 @@ export function createDriverMarker(driver , map) {
 /* ================================================================================== */
 /* ========= Rider Marker ========== */
 export function createRiderMarker(rider , map) {
-  const { key , phone , address } = rider;
+  const { id , phone , address } = rider;
   const pos = { lat: +rider.lat, lng: +rider.lng };
   const content = `
   <div class="info-box-wrap">
@@ -72,7 +72,7 @@ export function createRiderMarker(rider , map) {
   });
 
   // add array rider
-  arrRider.push({pos: riderMarker , id: key});
+  arrRider.push({pos: riderMarker , id: id});
 
   // draggable rider marker
   let beforePosition = null;

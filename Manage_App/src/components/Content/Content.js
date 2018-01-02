@@ -28,19 +28,19 @@ export default class Content extends Component {
       this.setState(waitingRiders);
     });
 
-    socket.on('SEND_UPDATE_RIDER', rider => {
+    socket.on('SEND_UPDATE_RIDER', data => {
       const pickupRiders = (preState) => ({
-        ...preState , selectedRiders: preState.selectedRiders.concat(rider)
+        ...preState , selectedRiders: preState.selectedRiders.concat(data)
       });
       this.setState(pickupRiders);
     });
   }
 
   showWaitingRider(rider) {
-    const {key , phone , address} = rider;
+    const {id , phone , address} = rider;
     return (
       <Waiting 
-        key={key}
+        key={id}
         phone={phone}
         address={address}
       />
@@ -48,22 +48,22 @@ export default class Content extends Component {
   }
 
   showNotPickUpRider(rider) {
-    const {key , phone , address} = rider;
+    const {id , phone , address} = rider;
     return (
       <NotPickUp 
-        key={key}
+        key={id}
         phone={phone}
         address={address}
       />
     );
   }
 
-  showPickUpRider(rider) {
-    const {phone , address , driver , key} = rider;
+  showPickUpRider({rider , driver}) {
+    const { phone , address , id } = rider;
     const { name } = driver;
     return(
       <PickUp 
-        key={key}
+        key={id}
         phone={phone}
         address={address}
         name={name}

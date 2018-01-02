@@ -32,12 +32,12 @@ class GoogleMap extends Component {
         confirmButtonText: 'Chấp nhận'  
       });
       if(result.value) {
-        socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.key});
+        socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.id});
         this.props.toggleShow();
         const rMarker = riderMarker(riderData , map);
         drawDirection(dMarker , rMarker, map);
       }else{
-        const data = {id: riderData.key , address: riderData.address};
+        const data = {id: riderData.id , address: riderData.address};
         socket.emit('DRIVER_CANCEL', data);
       }
     });
