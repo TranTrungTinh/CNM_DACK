@@ -126,6 +126,7 @@ export function drawDirection(idDriver , idRider , map) {
 export function riderNotPickUp(data) {
   const {id , address} = data;
   const index = arrRider.findIndex(e => e.id === id);
+  if(index < 0) return;
   const { pos } = arrRider[index];
   swal({
     title: 'THÔNG BÁO',

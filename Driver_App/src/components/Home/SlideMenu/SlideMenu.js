@@ -15,9 +15,9 @@ class SlideMenu extends Component {
   state = {
     isOpen: false
   }
-  handleLogOut = () => {
+  handleLogOut = async () => {
     this.setState({isOpen: false});
-    swal({
+    const result = await swal({
       title: 'LOG OUT',
       text: "Are you sure ?",
       type: 'warning',
@@ -25,12 +25,11 @@ class SlideMenu extends Component {
       confirmButtonColor: '#2ecc71',
       cancelButtonColor: '#e74c3c',
       confirmButtonText: 'Yes, log out!'
-    }).then(result => { 
-      if(result.value) {
-        socket.emit('DRIVER_LOG_OUT', this.props.driverID);
-        this.props.logOut();
-      } 
     });
+    if(result.value) {
+      socket.emit('DRIVER_LOG_OUT', this.props.idDriver);
+      this.props.logOut();
+    }
   }
 
   render() {
@@ -53,7 +52,4 @@ class SlideMenu extends Component {
   }
 }
 
-const mapStateToProp = (state) => ({
-  driverID: state.profile.id
-});
-export default connect(mapStateToProp , actionCreators)(SlideMenu);
+export default connect(null , actionCreators)(SlideMenu);

@@ -55,6 +55,7 @@ io.on('connection' , socket => {
       countDriverSend++; // Lưu giá trị số lần gửi
       const { id } = currentDriver[index];
       socket.to(id).emit('SEVER_SEND_RIDER' , rider);
+      
     });
   });
 
@@ -63,10 +64,11 @@ io.on('connection' , socket => {
 
   socket.on('DRIVER_LOG_IN', idDriver => {
     socket.idDriver = idDriver;
-    currentDriver.push(socket);
+    currentDriver.push(socket); 
   });
 
   socket.on('DRIVER_LOG_OUT', idDriver => {
+    delete socket.idDriver; 
     const index = currentDriver.findIndex(e => e.idDriver === idDriver);
     currentDriver.splice(index , 1);
   });
@@ -79,9 +81,12 @@ io.on('connection' , socket => {
   });
 
   socket.on('DRIVER_CANCEL', data => {
-    countDriverCancel++;
+    countDriverCancel++;    
+    console.log('Da nhan cancel: ' + countDriverSend);
+    console.log('Da nhan send: ' + countDriverSend);
     // Kiểm tra nếu số lượt không phản hồi = số lần gửi
     if(countDriverCancel === countDriverSend) {
+      console.log('Gui du lieu');
       countDriverSend = 0;
       countDriverCancel = 0;
       socket.broadcast.emit('CHOOSE_ANOTHER_DRIVER' , data);
@@ -106,7 +111,7 @@ io.on('connection' , socket => {
   socket.on('disconnect' , () => {
     const {idDriver} = socket;
     if(idDriver) {
-      const index = currentDriver.findIndex(e => e.idDriver == idDriver);
+      const index = currentDriver.findIndex(e => e.idDriver === idDriver);
       currentDriver.splice(index , 1);
     }
   });

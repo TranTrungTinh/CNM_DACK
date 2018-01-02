@@ -1,0 +1,18 @@
+.controll {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between
+}
+.btn_start {
+  position: fixed;
+  left: 3px;
+  bottom: 5px;
+  width: 49%;
+}
+
+.btn_end {
+  position: fixed;
+  right: 3px;
+  bottom: 5px;
+  width: 49%;
+}
