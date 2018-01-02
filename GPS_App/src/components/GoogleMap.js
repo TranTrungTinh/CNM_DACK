@@ -24,6 +24,7 @@ export default class GoogleMap extends Component {
     
     const map = new google.maps.Map(this.refs.map , mapOptions);
 
+    // Get all driver
     socket.emit('GET_ALL_DRIVER');
     socket.on('SEND_ALL_DRIVER' , drivers => {
       drivers.forEach(driver => {

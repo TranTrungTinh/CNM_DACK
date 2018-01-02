@@ -4,7 +4,7 @@ import './Header.css';
 export default class Header extends Component {
   render() {
     return (
-      <div className="header">VEHICLE MANAGEMENT</div>
+      <div className="header">QUẢN LÝ TRẠNG THÁI</div>
     );
   }
 }

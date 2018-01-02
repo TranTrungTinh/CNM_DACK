@@ -15,8 +15,7 @@ class GoogleMap extends Component {
   componentDidMount(){
     const {lat , lng , idDriver} = this.props;
     const map = new google.maps.Map(this.refs.map , createMap(lat , lng));
-    const dMarker = driverMarker({lat , lng} , map);    
-    if(idDriver) socket.emit('DRIVER_LOG_IN', idDriver);
+    const dMarker = driverMarker({lat , lng} , map);  
 
     // nhan du lieu tu server
     socket.off('SEVER_SEND_RIDER');

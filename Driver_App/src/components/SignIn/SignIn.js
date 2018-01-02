@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './SignIn.css';
-import {Redirect} from 'react-router-dom';
-
 import axios from 'axios';
 import swal from 'sweetalert2';
+
+import {Redirect} from 'react-router-dom';
+import {socket} from '../../socketClient';
 import {connect} from 'react-redux';
 import * as actionCreators from '../../redux/actionCreators';
 
@@ -21,8 +22,14 @@ class SignIn extends Component {
     axios.post('/api/login' , {username , password})
     .then(({ data }) => {
       if(data.error) return swal('FAIL', data.error , 'error');
-      this.props.logIn(data.driver);
-      this.setState({isLogin: true});
+      socket.emit('DRIVER_LOG_IN', data.driver.id);
+      socket.on('LOGIN_SUCCESS', () => {
+        this.props.logIn(data.driver);
+        this.setState({isLogin: true});
+      });
+      socket.on('LOGIN_FAIL', () => {
+        swal('FAIL',`Đã có tài xế đăng nhập dưới tên tài khoản: ${username}`,'error');
+      });
     })
     .catch(error => swal('FAIL', error.message , 'error'));
   }
@@ -48,8 +55,6 @@ class SignIn extends Component {
       </div>
     );
   }
-
-  
 }
 
 export default connect(null , actionCreators)(SignIn);

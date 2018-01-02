@@ -5,6 +5,7 @@ import {socket} from '../../socketClient';
 // components
 import Waiting from './Profile/Waiting';
 import PickUp from './Profile/PickUp';
+import NotPickUp from './Profile/NotPickUp';
 
 export default class Content extends Component {
 
@@ -15,6 +16,7 @@ export default class Content extends Component {
       selectedRiders: []
     };
     this.showPickUpRider = this.showPickUpRider.bind(this);
+    this.showNotPickUpRider = this.showNotPickUpRider.bind(this);
     this.showWaitingRider = this.showWaitingRider.bind(this);
   }
 
@@ -45,11 +47,23 @@ export default class Content extends Component {
     );
   }
 
+  showNotPickUpRider(rider) {
+    const {key , phone , address} = rider;
+    return (
+      <NotPickUp 
+        key={key}
+        phone={phone}
+        address={address}
+      />
+    );
+  }
+
   showPickUpRider(rider) {
-    const {phone , address , driver} = rider;
+    const {phone , address , driver , key} = rider;
     const { name } = driver;
     return(
       <PickUp 
+        key={key}
         phone={phone}
         address={address}
         name={name}
@@ -64,6 +78,12 @@ export default class Content extends Component {
         <div className="waiting_container col" >
           <div className="list-group" id="watting_contend">
             { waitingRiders.map(this.showWaitingRider) }
+          </div>
+        </div>
+
+        <div className="waiting_container col" >
+          <div className="list-group" id="watting_contend">
+            { waitingRiders.map(this.showNotPickUpRider) }
           </div>
         </div>
 

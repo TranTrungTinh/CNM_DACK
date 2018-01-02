@@ -1,4 +1,3 @@
-
 // import library
 const express = require('express');
 const app = express();
@@ -16,12 +15,14 @@ app.use('/api', apiDriver);
 // connect
 server.listen(4200, () => console.log('Server has been started port 4200'));
 
-// 
+// Global variable
 const currentDriver = []; // store driver log in
+const busyDriver = []; // store diver busy
 let oneAccept = 0; // check one accept driver
 let countDriverSend = 0; // check count notification send to driver
 let countDriverCancel = 0; // check equal with countDriverSend
 
+// Listening connected...
 io.on('connection' , socket => {
   
   /* Socket with GPS APP */
@@ -55,16 +56,20 @@ io.on('connection' , socket => {
       countDriverSend++; // Lưu giá trị số lần gửi
       const { id } = currentDriver[index];
       socket.to(id).emit('SEVER_SEND_RIDER' , rider);
-      
     });
   });
-
   /* ============================== */
   /* Socket with DRIVER APP */
 
   socket.on('DRIVER_LOG_IN', idDriver => {
     socket.idDriver = idDriver;
-    currentDriver.push(socket); 
+    const index = currentDriver.findIndex(e => e.idDriver === idDriver);
+    if(index < 0) {
+      currentDriver.push(socket);
+      socket.emit('LOGIN_SUCCESS');     
+      return;
+    }
+    socket.emit('LOGIN_FAIL');     
   });
 
   socket.on('DRIVER_LOG_OUT', idDriver => {
@@ -75,6 +80,12 @@ io.on('connection' , socket => {
 
   socket.on('DRIVER_ACCEPT', data => {
     if(oneAccept === 1){
+      
+      const {idDriver} = data;
+      busyDriver.push(idDriver); // driver accept ~ driver is busying
+      const index = currentDriver.findIndex(e => e.idDriver === idDriver);
+      currentDriver.splice(index , 1); // remove driver busy
+
       oneAccept = 0; // Chỉ chấp nhận một tài xế chọn chấp nhận nhanh nhất     
       socket.broadcast.emit('CLOSE_NOTIFICATION', data);
     }
