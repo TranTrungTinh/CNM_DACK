@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './GoogleMap.css';
-
 // import library
 import {socket} from '../socketClient';
 import swal from 'sweetalert2';

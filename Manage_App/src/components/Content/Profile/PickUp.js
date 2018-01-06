@@ -7,8 +7,13 @@ import taxi from '../../../images/taxi.png';
 export default class PickUp extends Component {
   render() {
     const {phone , address , name} = this.props;
+    const clsName = `
+    list-group-item 
+    list-group-item-action 
+    list-group-item-success 
+    list_picktup`;
     return (
-      <a href="#pickup" className="list-group-item list-group-item-action list-group-item-success list_picktup">
+      <a href="#pickup" className={clsName}>
         <img src={user_profile} alt="" />
         <div className="wrapper_profile">
           <h6>{phone}</h6>

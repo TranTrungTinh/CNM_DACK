@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './SignIn.css';
+// library
 import axios from 'axios';
 import swal from 'sweetalert2';
-
-import {Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom'; // router
 import {socket} from '../../socketClient';
+// redux
 import {connect} from 'react-redux';
 import * as actionCreators from '../../redux/actionCreators';
 
@@ -32,6 +33,12 @@ class SignIn extends Component {
       });
     })
     .catch(error => swal('FAIL', error.message , 'error'));
+  }
+
+  componentWillUnmount() {
+    // remove listener with socket.io
+    socket.off('LOGIN_SUCCESS');
+    socket.off('LOGIN_FAIL');
   }
   render() {
     const redirect = this.state.isLogin ? <Redirect to="/home" /> : null;

@@ -33,6 +33,9 @@ io.on('connection' , socket => {
   
   // Khi app GPS định vị cho người dùng hệ thống gửi lên 5 xe
   socket.on('RIDER_SELECTED_DRIVER', data => {
+    // write 
+    countDriverSend = 0;
+    countDriverCancel = 0;
     // Tình huống thứ 1
     // Chưa có tài xế đăng nhập
     if(!currentDriver[0]) {
@@ -75,11 +78,14 @@ io.on('connection' , socket => {
   socket.on('DRIVER_LOG_OUT', idDriver => {
     delete socket.idDriver; 
     const index = currentDriver.findIndex(e => e.idDriver === idDriver);
-    currentDriver.splice(index , 1);
+    const indexBusy = busyDriver.findIndex(e => e.idDriver === idDriver);
+    if(index >= 0) currentDriver.splice(index , 1);
+    else busyDriver.splice(indexBusy , 1);
   });
 
   socket.on('DRIVER_ACCEPT', async ({idDriver , idRider}) => {
     if(oneAccept === 1){
+      
       busyDriver.push(idDriver); // driver accept ~ driver is busying
       const index = currentDriver.findIndex(e => e.idDriver === idDriver);
       currentDriver.splice(index , 1); // remove driver busy
@@ -88,7 +94,6 @@ io.on('connection' , socket => {
       // set state=true with driver
       const Ddata = await db.ref(`cars/${idDriver}`).once('value');
       const Rdata = await db.ref(`users/${idRider}`).once('value');
-
       db.ref(`users/${idRider}`).remove();
       db.ref(`cars/${idDriver}`).update({state: true});
       
@@ -102,17 +107,23 @@ io.on('connection' , socket => {
     }
   });
 
-  socket.on('DRIVER_CANCEL', data => {
+  socket.on('DRIVER_CANCEL', async (data) => {
     countDriverCancel++;    
-    // console.log('Da nhan cancel: ' + countDriverSend);
+    // console.log('Da nhan cancel: ' + countDriverCancel);
     // console.log('Da nhan send: ' + countDriverSend);
     // Kiểm tra nếu số lượt không phản hồi = số lần gửi
     if(countDriverCancel === countDriverSend) {
       // console.log('Gui du lieu');
-      countDriverSend = 0;
-      countDriverCancel = 0;
+      const {id} = data;
+      // write database not pick up
+      const Rdata = await db.ref(`users/${id}`).once('value');
+      if(Rdata.key) {
+        const rider = {id: Rdata.key , ...Rdata.val()};
+        db.ref('notpickup').push(rider);
+        db.ref(`users/${id}`).remove();   
+      }       
       socket.broadcast.emit('CHOOSE_ANOTHER_DRIVER' , data);
-    }
+    } 
   });
 
   /* ============================== */
@@ -126,7 +137,13 @@ io.on('connection' , socket => {
 
   db.ref('pickup').on('child_added', data => {
     const { rider , driver } = data.val();
-    socket.emit('SEND_UPDATE_RIDER', {rider , driver});
+    socket.emit('SEND_PICKUP_RIDER', {rider , driver});
+  });
+
+  db.ref('notpickup').on('child_added', user => {
+    const { state , phone , address , lat , lng , id } = user.val();
+    const rider = { id , phone , address , lat , lng };
+    socket.emit('SEND_NOT_PICKUP_RIDER', rider);
   });
 
   socket.on('disconnect' , () => {

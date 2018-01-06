@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Title.css';
+// resource
 import waiting from '../../../images/taxi_passanger.png';
 import notpickup from '../../../images/waiting_profile.png';
 import car from '../../../images/car_pickup.png';

@@ -15,6 +15,7 @@ class SlideMenu extends Component {
   state = {
     isOpen: false
   }
+  
   handleLogOut = async () => {
     this.setState({isOpen: false});
     const result = await swal({
@@ -28,6 +29,7 @@ class SlideMenu extends Component {
     });
     if(result.value) {
       socket.emit('DRIVER_LOG_OUT', this.props.idDriver);
+      this.props.toggleShow();
       this.props.logOut();
     }
   }

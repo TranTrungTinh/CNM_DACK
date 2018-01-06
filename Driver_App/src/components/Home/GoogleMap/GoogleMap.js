@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import './GoogleMap.css';
 import swal from 'sweetalert2';
+// redux
 import {connect} from 'react-redux';
 import * as actionCreators from '../../../redux/actionCreators';
+//component
+import Controll from '../Controll/Controll';
 // library
 import {socket} from '../../../socketClient';
 import {createMap} from '../../../google/mapOption';
@@ -12,15 +15,17 @@ const google = window.google
 
 class GoogleMap extends Component {
 
+  state = {}
+
   componentDidMount(){
     const {lat , lng , idDriver} = this.props;
     const map = new google.maps.Map(this.refs.map , createMap(lat , lng));
+    this.setState(map);
     const dMarker = driverMarker({lat , lng} , map);  
 
     // nhan du lieu tu server
-    socket.off('SEVER_SEND_RIDER');
-    socket.on('SEVER_SEND_RIDER', async (riderData) => {
-      const result = await swal({
+    socket.on('SEVER_SEND_RIDER',  (riderData) => {
+      swal({
         title: 'Bạn có muốn đón khách ?',
         text: 'Thông báo sẽ đóng sau 5 giây !',
         type: 'question',
@@ -30,20 +35,21 @@ class GoogleMap extends Component {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Chấp nhận'  
-      });
-      if(result.value) {
+      }).then(({dismiss , value}) => {
+        if(dismiss === 'timer' || dismiss === 'cancel') {
+          const data = {id: riderData.id , address: riderData.address};
+          socket.emit('DRIVER_CANCEL', data);
+          return;
+        }
         socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.id});
         this.props.toggleShow();
         const rMarker = riderMarker(riderData , map);
         drawDirection(dMarker , rMarker, map);
-      }else{
-        const data = {id: riderData.id , address: riderData.address};
-        socket.emit('DRIVER_CANCEL', data);
-      }
-    });
+        return;
+      });
+    }); 
 
     // Thong bao khi co driver da nhan khach
-    socket.off('CLOSE_NOTIFICATION');
     socket.on('CLOSE_NOTIFICATION', () => {
       swal({
         type: 'success',
@@ -52,14 +58,24 @@ class GoogleMap extends Component {
         timer: 500
       })
     });
+  }
 
+  componentWillMount() {
+    // remove listener with socket.io
+    socket.off('SEVER_SEND_RIDER');
+    socket.off('CLOSE_NOTIFICATION');    
   }
 
   render() {
+    const {isShow} = this.props;
+    const isControllComponents = isShow ? <Controll /> : null;
     return (
-      <div id="map" ref="map" ></div>
+      <div>
+        <div id="map" ref="map" ></div>
+        { isControllComponents }
+      </div>
     );
   }
 }
-
-export default connect(null , actionCreators)(GoogleMap);
+const mapStateToProp = (state) => ({ isShow: state.isShow });
+export default connect(mapStateToProp , actionCreators)(GoogleMap);

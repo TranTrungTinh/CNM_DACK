@@ -13,6 +13,7 @@ export default class Content extends Component {
     super(props);
     this.state = {
       waitingRiders: [],
+      notSelectedRiders: [],
       selectedRiders: []
     };
     this.showPickUpRider = this.showPickUpRider.bind(this);
@@ -21,18 +22,39 @@ export default class Content extends Component {
   }
 
   componentDidMount() {
+    // handle user is waiting car
     socket.on('SEND_NEW_RIDER', rider => {
       const waitingRiders = (preState) => ({
         ...preState , waitingRiders: preState.waitingRiders.concat(rider)
       });
       this.setState(waitingRiders);
     });
+    
+    // handle user hasn't been pick up
+    socket.on('SEND_NOT_PICKUP_RIDER', notPickupRider => {
+      const notPickupRiders = (preState) => ({
+        ...preState ,
+        waitingRiders: preState.waitingRiders.filter(rider => rider.id !== notPickupRider.id), 
+        notSelectedRiders: preState.notSelectedRiders.concat(notPickupRider)
+      });
+      this.setState(notPickupRiders);
+    });
 
-    socket.on('SEND_UPDATE_RIDER', data => {
+    // handle user has been pick up
+    socket.on('SEND_PICKUP_RIDER', data => {
       const pickupRiders = (preState) => ({
         ...preState , selectedRiders: preState.selectedRiders.concat(data)
       });
       this.setState(pickupRiders);
+    });
+
+    // filter rider has been pick up
+    socket.on('CLOSE_NOTIFICATION', ({idDriver , idRider}) => {
+      const waitingRiders = (preState) => ({
+        ...preState,
+        waitingRiders: preState.waitingRiders.filter(rider => rider.id !== idRider)
+      });
+      this.setState(waitingRiders);
     });
   }
 
@@ -72,7 +94,7 @@ export default class Content extends Component {
   }
 
   render() {
-    const {waitingRiders , selectedRiders} = this.state;
+    const {waitingRiders , selectedRiders , notSelectedRiders} = this.state;
     return (
       <div className="row list-state"> 
         <div className="waiting_container col" >
@@ -83,7 +105,7 @@ export default class Content extends Component {
 
         <div className="waiting_container col" >
           <div className="list-group" id="watting_contend">
-            { waitingRiders.map(this.showNotPickUpRider) }
+            { notSelectedRiders.map(this.showNotPickUpRider) }
           </div>
         </div>
 
