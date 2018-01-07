@@ -76,6 +76,7 @@ class Content extends Component {
     return(
       <PickUp 
         key={id}
+        idRider={id}
         phone={phone}
         address={address}
         name={name}
@@ -130,7 +131,7 @@ class Content extends Component {
 const mapStateToProps = (state) => ({
   waitingRiders: state.waitingRiders,
   notSelectedRiders: state.notSelectedRiders,
-  selectedRiders: state.selectedRiders,
+  selectedRiders: state.selectedRiders.pickupRiders,
   completeRiders: state.completeRiders
 });
 export default connect(mapStateToProps , actionCreators)(Content);

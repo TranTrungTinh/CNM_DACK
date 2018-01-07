@@ -3,7 +3,8 @@ import {
   REMOVE_USER_WAITING,
   ADD_NOT_PICKUP,
   ADD_PICKUP_RIDER,
-  REMOVE_PICKUP_RIDER
+  REMOVE_PICKUP_RIDER,
+  SHOW_DIRECTION
 } from './actionType';
 
 export function addWaitingRider(rider){
@@ -32,5 +33,11 @@ export function addPickupRider(data){
 export function removePickupRider(idRider){
   return dispatch => {
     dispatch({ type: REMOVE_PICKUP_RIDER , idRider });
+  };
+}
+
+export function showDirection(idRider) {
+  return dispatch => {
+    dispatch({ type: SHOW_DIRECTION , idRider });
   };
 }
