@@ -17,7 +17,7 @@ class GoogleMap extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { map: {} , dMarker: {} }
+    this.state = {idRider: '' , map: {} , dMarker: {} }
     this.openClickMap = this.openClickMap.bind(this);
     this.offClickMap = this.offClickMap.bind(this);
   }
@@ -26,9 +26,7 @@ class GoogleMap extends Component {
     const {lat , lng , idDriver} = this.props;
     const map = new google.maps.Map(this.refs.map , createMap(lat , lng));
     const dMarker = driverMarker({lat , lng} , map);  
-    
     this.setState({ map , dMarker });
-
     // nhan du lieu tu server
     socket.on('SEVER_SEND_RIDER',  (riderData) => {
       swal({
@@ -48,6 +46,7 @@ class GoogleMap extends Component {
           return;
         }
         socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.id});
+        this.setState({idRider: riderData.id});      
         this.props.toggleShow();
         const rMarker = riderMarker(riderData , map);
         drawDirection(dMarker , rMarker, map);

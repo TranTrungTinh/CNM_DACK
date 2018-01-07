@@ -4,6 +4,7 @@ import './Title.css';
 import waiting from '../../../images/taxi_passanger.png';
 import notpickup from '../../../images/waiting_profile.png';
 import car from '../../../images/car_pickup.png';
+import user_complete from '../../../images/usercomplete.png';
 
 export default class Title extends Component {
   render() {
@@ -20,6 +21,10 @@ export default class Title extends Component {
         <div className="col title">
           <img src={car} alt="" className="image" />
           <p>Người dùng đã được xe đón</p>
+        </div>
+        <div className="col title">
+          <img src={user_complete} alt="" className="image" />
+          <p>Đã hoàn thành</p>
         </div>
       </div>
     );

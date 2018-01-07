@@ -24,7 +24,9 @@ export default class PickUp extends Component {
           <h6>{name}</h6>
         </div>
         
-        <button type="button" className="btn btn-outline-danger btn-sm btn-show-direction" >Show Direction</button>
+        <button className="btn btn-outline-danger btn-sm btn-show-direction" 
+          // onClick={}
+        >Show Direction</button>
         
       </a>
     );

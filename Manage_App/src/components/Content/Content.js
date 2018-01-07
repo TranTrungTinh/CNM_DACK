@@ -1,60 +1,50 @@
 import React, { Component } from 'react';
 import './Content.css';
 import {socket} from '../../socketClient';
-
+//redux
+import {connect} from 'react-redux';
+import * as actionCreators from '../../redux/action/actionCreators';
 // components
 import Waiting from './Profile/Waiting';
 import PickUp from './Profile/PickUp';
 import NotPickUp from './Profile/NotPickUp';
+import Complete from './Profile/Complete';
 
-export default class Content extends Component {
+class Content extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      waitingRiders: [],
-      notSelectedRiders: [],
-      selectedRiders: []
-    };
     this.showPickUpRider = this.showPickUpRider.bind(this);
     this.showNotPickUpRider = this.showNotPickUpRider.bind(this);
     this.showWaitingRider = this.showWaitingRider.bind(this);
+    this.showCompleteRider = this.showCompleteRider.bind(this);
   }
 
   componentDidMount() {
+    const {
+      addWaitingRider,
+      addNotPickupRider,
+      addPickupRider,
+      removeWaitingRider
+    } = this.props;
     // handle user is waiting car
     socket.on('SEND_NEW_RIDER', rider => {
-      const waitingRiders = (preState) => ({
-        ...preState , waitingRiders: preState.waitingRiders.concat(rider)
-      });
-      this.setState(waitingRiders);
+      addWaitingRider(rider);
     });
     
     // handle user hasn't been pick up
     socket.on('SEND_NOT_PICKUP_RIDER', notPickupRider => {
-      const notPickupRiders = (preState) => ({
-        ...preState ,
-        waitingRiders: preState.waitingRiders.filter(rider => rider.id !== notPickupRider.id), 
-        notSelectedRiders: preState.notSelectedRiders.concat(notPickupRider)
-      });
-      this.setState(notPickupRiders);
+      addNotPickupRider(notPickupRider);
     });
 
     // handle user has been pick up
     socket.on('SEND_PICKUP_RIDER', data => {
-      const pickupRiders = (preState) => ({
-        ...preState , selectedRiders: preState.selectedRiders.concat(data)
-      });
-      this.setState(pickupRiders);
+      addPickupRider(data);
     });
 
     // filter rider has been pick up
-    socket.on('CLOSE_NOTIFICATION', ({idDriver , idRider}) => {
-      const waitingRiders = (preState) => ({
-        ...preState,
-        waitingRiders: preState.waitingRiders.filter(rider => rider.id !== idRider)
-      });
-      this.setState(waitingRiders);
+    socket.on('CLOSE_NOTIFICATION', ({ idRider }) => {
+      removeWaitingRider(idRider);
     });
   }
 
@@ -93,8 +83,21 @@ export default class Content extends Component {
     );
   }
 
+  showCompleteRider(rider) {
+    const {id , phone , address} = rider;
+    return (
+      <Complete 
+        key={id}
+        phone={phone}
+        address={address}
+      />
+    );
+  }
   render() {
-    const {waitingRiders , selectedRiders , notSelectedRiders} = this.state;
+    const {
+      waitingRiders , selectedRiders , notSelectedRiders , completeRiders
+    } = this.props;
+
     return (
       <div className="row list-state"> 
         <div className="waiting_container col" >
@@ -109,12 +112,25 @@ export default class Content extends Component {
           </div>
         </div>
 
-        <div className="selected_container col" >
+        <div className="waiting_container col" >
           <div className="list-group" id="watting_selected">
             { selectedRiders.map(this.showPickUpRider) }
+          </div>
+        </div>
+
+        <div className="waiting_container col" >
+          <div className="list-group" id="watting_contend">
+            { completeRiders.map(this.showCompleteRider) }
           </div>
         </div>
       </div>
     );
   }
 }
+const mapStateToProps = (state) => ({
+  waitingRiders: state.waitingRiders,
+  notSelectedRiders: state.notSelectedRiders,
+  selectedRiders: state.selectedRiders,
+  completeRiders: state.completeRiders
+});
+export default connect(mapStateToProps , actionCreators)(Content);

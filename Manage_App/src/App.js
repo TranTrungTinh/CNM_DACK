@@ -10,7 +10,7 @@ import GoogleMap from './components/GoogleMap/GoogleMap';
 class App extends Component {
   render() {
     return (
-      <div className="wrapper_container container">
+      <div className="wrapper_container">
         <Header />
         <Title />
         <Content />

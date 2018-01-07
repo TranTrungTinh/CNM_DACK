@@ -1,0 +1,22 @@
+.list-group-item img{
+  width:60px !important;
+  height:60px;
+  float:left;
+  margin-right: 8px;
+}
+.list_notpickup >.wrapper_profile h6{
+  padding:6px 5px 1px 0;
+  margin:0;
+  color: #e74c3c;
+  font-weight: 700;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.list_notpickup >.wrapper_profile p{
+  color:rgb(5, 5, 5);
+  font-size: 13px;  
+  padding-top: 2px;
+  margin:0;
+}
