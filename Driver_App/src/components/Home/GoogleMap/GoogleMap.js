@@ -15,13 +15,19 @@ const google = window.google
 
 class GoogleMap extends Component {
 
-  state = {}
+  constructor(props) {
+    super(props);
+    this.state = { map: {} , dMarker: {} }
+    this.openClickMap = this.openClickMap.bind(this);
+    this.offClickMap = this.offClickMap.bind(this);
+  }
 
   componentDidMount(){
     const {lat , lng , idDriver} = this.props;
     const map = new google.maps.Map(this.refs.map , createMap(lat , lng));
-    this.setState(map);
     const dMarker = driverMarker({lat , lng} , map);  
+    
+    this.setState({ map , dMarker });
 
     // nhan du lieu tu server
     socket.on('SEVER_SEND_RIDER',  (riderData) => {
@@ -66,9 +72,25 @@ class GoogleMap extends Component {
     socket.off('CLOSE_NOTIFICATION');    
   }
 
+  openClickMap() {
+    const {map , dMarker} = this.state;
+    map.addListener('click',(event) => {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const pos = new google.maps.LatLng(lat,lng);
+      dMarker.setPosition(pos);
+    });
+  }
+
+  offClickMap() {
+    const {map} = this.state;
+    google.maps.event.clearListeners(map, 'click');
+  }
+
   render() {
     const {isShow} = this.props;
-    const isControllComponents = isShow ? <Controll /> : null;
+    const isControllComponents = isShow ? 
+      <Controll onMap={this.openClickMap} offMap={this.offClickMap}/> : null;
     return (
       <div>
         <div id="map" ref="map" ></div>

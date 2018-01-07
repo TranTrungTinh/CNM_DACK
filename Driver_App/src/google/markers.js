@@ -23,3 +23,4 @@ export function riderMarker(rider , map) {
   });
   return riderMarker;
 }
+

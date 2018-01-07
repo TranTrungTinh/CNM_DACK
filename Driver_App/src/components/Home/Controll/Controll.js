@@ -9,10 +9,12 @@ export default class Controll extends Component {
 
   handleStartClick = () => {
     this.setState({isStart: false});
+    this.props.onMap();
   }
 
   handleEndClick = () => {
     this.setState({isStart: true});    
+    this.props.offMap();
   }
 
   render() {
