@@ -17,9 +17,10 @@ class GoogleMap extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {idRider: '' , map: {} , dMarker: {} }
+    this.state = {idRider: '', map: {}, dMarker: {}, rMarker: {}, direction: {} };
     this.openClickMap = this.openClickMap.bind(this);
     this.offClickMap = this.offClickMap.bind(this);
+    this.resetAfterComplete = this.resetAfterComplete.bind(this);
   }
 
   componentDidMount(){
@@ -46,10 +47,10 @@ class GoogleMap extends Component {
           return;
         }
         socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.id});
-        this.setState({idRider: riderData.id});      
-        this.props.toggleShow();
+        this.props.showControll();
         const rMarker = riderMarker(riderData , map);
-        drawDirection(dMarker , rMarker, map);
+        const direction = drawDirection(dMarker , rMarker, map);
+        this.setState({idRider: riderData.id , rMarker , direction});              
         return;
       });
     }); 
@@ -84,8 +85,26 @@ class GoogleMap extends Component {
   }
 
   offClickMap() {
-    const {map} = this.state;
+    const {map , idRider} = this.state;
     google.maps.event.clearListeners(map, 'click');
+    this.props.hideControll();
+    socket.emit('DRIVER_COMPLETE' , idRider);
+    this.resetAfterComplete();
+  }
+
+  resetAfterComplete() {
+    const {dMarker , rMarker , direction} = this.state;
+    // reset marker
+    rMarker.setMap(null);
+    direction.setMap(null);
+    // refresh driver marker
+    const {lat , lng} = this.props;        
+    const pos = new google.maps.LatLng(lat,lng);
+    dMarker.setPosition(pos);
+    // set State
+    const refreshState = preState => (
+      {...preState , rMarker: {} , direction: {} , idRider: ''});
+    this.setState(refreshState);
   }
 
   render() {

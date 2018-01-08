@@ -6,7 +6,7 @@ const completeRiders = [];
 
 const completeReducer = (state = completeRiders , action) => {
   if(action.type === ADD_COMPLETE_RIDER) {
-    const {rider} = action.payload;
+    const {rider} = action;
     return state.concat(rider);
   }
   return state;

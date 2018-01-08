@@ -10,8 +10,14 @@ export function logOut() {
   };
 }
 
-export function toggleShow() {
+export function showControll() {
   return dispatch => {
-    dispatch({ type: 'TOGGLE_SHOW' });
+    dispatch({ type: 'SHOW_CONTROLL' });
+  };
+}
+
+export function hideControll() {
+  return dispatch => {
+    dispatch({ type: 'HIDE_CONTROLL' });
   };
 }

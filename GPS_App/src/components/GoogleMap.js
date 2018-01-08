@@ -55,6 +55,11 @@ export default class GoogleMap extends Component {
     socket.on('CHOOSE_ANOTHER_DRIVER', data => {
       riderNotPickUp(data);
     }) ;
+
+    // When driver free
+    socket.on('SEND_FREE_DRIVER' , driver => {
+      createDriverMarker(driver , map);
+    });
   }
 
   render() {

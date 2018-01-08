@@ -25,7 +25,9 @@ class Content extends Component {
       addWaitingRider,
       addNotPickupRider,
       addPickupRider,
-      removeWaitingRider
+      removeWaitingRider,
+      removePickupRider,
+      addCompleteRider
     } = this.props;
     // handle user is waiting car
     socket.on('SEND_NEW_RIDER', rider => {
@@ -34,7 +36,9 @@ class Content extends Component {
     
     // handle user hasn't been pick up
     socket.on('SEND_NOT_PICKUP_RIDER', notPickupRider => {
+      const idRider = notPickupRider.id;
       addNotPickupRider(notPickupRider);
+      removeWaitingRider(idRider);
     });
 
     // handle user has been pick up
@@ -46,6 +50,14 @@ class Content extends Component {
     socket.on('CLOSE_NOTIFICATION', ({ idRider }) => {
       removeWaitingRider(idRider);
     });
+
+    // filter rider has been complete
+    socket.on('SEND_DRIVER_COMPLETE', idRider => {
+      removePickupRider(idRider);
+    });
+    socket.on('SEND_COMPLETE_RIDER' , rider => {
+      addCompleteRider(rider);
+    })
   }
 
   showWaitingRider(rider) {

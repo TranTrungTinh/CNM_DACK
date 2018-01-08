@@ -19,6 +19,12 @@ export function drawDirection(vehiclePosMarker , userPosMarker , map) {
   }, (resp, status) => {
     if (status !== 'OK') return;
     directionsDisplay.setDirections(resp);
+    // google.maps.event.clearListeners(map, 'click');
+    // map.addListener('click', () => {
+    //   vehiclePosMarker.setMap(null);
+    //   userPosMarker.setMap(null);
+    //   directionsDisplay.setMap(null);
+    // });
   });
   
 } // end handle direction

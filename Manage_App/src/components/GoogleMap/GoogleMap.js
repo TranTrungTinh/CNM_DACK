@@ -36,9 +36,9 @@ export default class GoogleMap extends Component {
 
     socket.on('SERVER_SEND_POSITION' , data => {
       const {idDriver , lat , lng} = data;
-      const {id} = this.props.driver;
-      if(idDriver === id) {
-        this.updatePosition(lat , lng);
+      if(this.props.driver) {
+        const {id} = this.props.driver;
+        if(idDriver === id) this.updatePosition(lat , lng);
       }
     });
 

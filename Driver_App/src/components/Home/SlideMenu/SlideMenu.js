@@ -29,7 +29,7 @@ class SlideMenu extends Component {
     });
     if(result.value) {
       socket.emit('DRIVER_LOG_OUT', this.props.idDriver);
-      this.props.toggleShow();
+      this.props.hideControll();
       this.props.logOut();
     }
   }

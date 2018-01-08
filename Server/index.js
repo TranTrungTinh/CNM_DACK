@@ -16,8 +16,8 @@ app.use('/api', apiDriver);
 server.listen(4200, () => console.log('Server has been started port 4200'));
 
 // Global variable
-const currentDriver = []; // store driver log in
-const busyDriver = []; // store diver busy
+const currentDriver = []; // store socket driver log in
+const busyDriver = []; // store socket diver busy
 let oneAccept = 0; // check one accept driver
 let countDriverSend = 0; // check count notification send to driver
 let countDriverCancel = 0; // check equal with countDriverSend
@@ -61,6 +61,8 @@ io.on('connection' , socket => {
       socket.to(id).emit('SEVER_SEND_RIDER' , rider);
     });
   });
+
+
   /* ============================== */
   /* Socket with DRIVER APP */
 
@@ -77,17 +79,19 @@ io.on('connection' , socket => {
 
   socket.on('DRIVER_LOG_OUT', idDriver => {
     const index = currentDriver.findIndex(e => e.idDriver === idDriver);
-    const indexBusy = busyDriver.findIndex(e => e.idDriver === idDriver);
+    const indexbusy = busyDriver.findIndex(e => e.idDriver === idDriver);
     if(index >= 0) currentDriver.splice(index , 1);
-    else busyDriver.splice(indexBusy , 1);
+    else busyDriver.splice(indexbusy , 1);
   });
 
   socket.on('DRIVER_ACCEPT', async ({idDriver , idRider}) => {
     if(oneAccept === 1){
-      
-      busyDriver.push(idDriver); // driver accept ~ driver is busying
+      // remove driver accept ~ driver is busying
       const index = currentDriver.findIndex(e => e.idDriver === idDriver);
-      currentDriver.splice(index , 1); // remove driver busy
+      if(index >= 0) {
+        busyDriver.push(currentDriver[index]);
+        currentDriver.splice(index , 1);
+      } 
 
       // update database
       // set state=true with driver
@@ -108,11 +112,8 @@ io.on('connection' , socket => {
 
   socket.on('DRIVER_CANCEL', async (data) => {
     countDriverCancel++;    
-    // console.log('Da nhan cancel: ' + countDriverCancel);
-    // console.log('Da nhan send: ' + countDriverSend);
     // Kiểm tra nếu số lượt không phản hồi = số lần gửi
     if(countDriverCancel === countDriverSend) {
-      // console.log('Gui du lieu');
       const {id} = data;
       // write database not pick up
       const Rdata = await db.ref(`users/${id}`).once('value');
@@ -123,6 +124,36 @@ io.on('connection' , socket => {
       }       
       socket.broadcast.emit('CHOOSE_ANOTHER_DRIVER' , data);
     } 
+  });
+
+  socket.on('DRIVER_COMPLETE' , async (idRider) => {
+    const data = await db.ref(`pickup`).once('value');
+    data.forEach(e => {
+      const {rider , driver} = e.val();
+      if(rider.id === idRider) {
+        // update currentDriver
+        const index = busyDriver.findIndex(e => e.idDriver === driver.id);
+        if(index >= 0) {
+          currentDriver.push(busyDriver[index]);
+          busyDriver.splice(index , 1);
+        }
+        // update database
+        db.ref('complete').push(rider);
+        db.ref(`cars/${driver.id}`).update({state: false});
+        db.ref(`pickup/${e.key}`).remove();
+        // send data
+        socket.broadcast.emit('SEND_DRIVER_COMPLETE', idRider);
+        return;                   
+      }
+    });
+  });
+
+  db.ref('cars').on('child_changed', driver => {
+    const {state , name , username , lat , lng} = driver.val();
+    if(!state) {
+      const freeDriver = {id: driver.key , name , username , lat , lng}
+      socket.emit('SEND_FREE_DRIVER' , freeDriver);
+    }
   });
 
   /* ============================== */
@@ -150,6 +181,12 @@ io.on('connection' , socket => {
     const { state , phone , address , lat , lng , id } = user.val();
     const rider = { id , phone , address , lat , lng };
     socket.emit('SEND_NOT_PICKUP_RIDER', rider);
+  });
+
+  db.ref('complete').on('child_added' , user => {
+    const { state , phone , address , lat , lng , id } = user.val();
+    const rider = { id , phone , address , lat , lng };
+    socket.emit('SEND_COMPLETE_RIDER', rider);
   });
 
   // Handle disconnect with socket
