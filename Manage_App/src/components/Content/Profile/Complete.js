@@ -8,8 +8,8 @@ export default class Complete extends Component {
     const clsName = `
     list-group-item 
     list-group-item-action 
-    list-group-item-info 
-    list_notpickup`;
+    list-group-item-warning  
+    list_complete`;
     return (
       <a href="#user" className={clsName}>
         <img src={user_profile} alt="" />

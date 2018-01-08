@@ -24,7 +24,7 @@ export default class Title extends Component {
         </div>
         <div className="col title">
           <img src={user_complete} alt="" className="image" />
-          <p>Đã hoàn thành</p>
+          <p>Đã hoàn thành chuyến đi</p>
         </div>
       </div>
     );

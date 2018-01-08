@@ -73,11 +73,13 @@ class GoogleMap extends Component {
 
   openClickMap() {
     const {map , dMarker} = this.state;
+    const {idDriver} = this.props;
     map.addListener('click',(event) => {
       const lat = event.latLng.lat();
       const lng = event.latLng.lng();
       const pos = new google.maps.LatLng(lat,lng);
       dMarker.setPosition(pos);
+      socket.emit('CLIENT_SEND_POSITION', {idDriver , lat , lng});
     });
   }
 

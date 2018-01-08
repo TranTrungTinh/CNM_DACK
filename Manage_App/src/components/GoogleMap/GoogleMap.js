@@ -4,6 +4,7 @@ import './GoogleMap.css';
 import {mapOptions} from '../../google/mapOption';
 import {driverMarker , riderMarker} from '../../google/markers';
 import {drawDirection} from '../../google/drawDirection';
+import { socket } from '../../socketClient';
 // Defind global
 const google = window.google;
 
@@ -24,9 +25,23 @@ export default class GoogleMap extends Component {
     this.drawDirectionOnMap(driver , rider);
   }
 
+  componentWillMount() {
+    //remove listener socket.io
+    socket.off('SERVER_SEND_POSITION');
+  }
+
   componentDidMount() {
     const map = new google.maps.Map(this.refs.map , mapOptions);
     this.setState({map});
+
+    socket.on('SERVER_SEND_POSITION' , data => {
+      const {idDriver , lat , lng} = data;
+      const {id} = this.props.driver;
+      if(idDriver === id) {
+        this.updatePosition(lat , lng);
+      }
+    });
+
   }
 
   hideMarker = () => {
@@ -45,6 +60,12 @@ export default class GoogleMap extends Component {
     drawDirection(DMarker , RMarker , map);
     // store marker will setMap(null)
     this.setState({DMarker , RMarker});
+  }
+
+  updatePosition = (lat , lng) => {
+    const { DMarker } = this.state;
+    const pos = new google.maps.LatLng(lat,lng);
+    DMarker.setPosition(pos);
   }
 
   render() {

@@ -33,7 +33,7 @@ io.on('connection' , socket => {
   
   // Khi app GPS định vị cho người dùng hệ thống gửi lên 5 xe
   socket.on('RIDER_SELECTED_DRIVER', data => {
-    // write 
+    // reset state
     countDriverSend = 0;
     countDriverCancel = 0;
     // Tình huống thứ 1
@@ -76,7 +76,6 @@ io.on('connection' , socket => {
   });
 
   socket.on('DRIVER_LOG_OUT', idDriver => {
-    delete socket.idDriver; 
     const index = currentDriver.findIndex(e => e.idDriver === idDriver);
     const indexBusy = busyDriver.findIndex(e => e.idDriver === idDriver);
     if(index >= 0) currentDriver.splice(index , 1);
@@ -127,6 +126,13 @@ io.on('connection' , socket => {
   });
 
   /* ============================== */
+  /* Socket with MANAGE AND DRIVER APP */
+
+  socket.on('CLIENT_SEND_POSITION' , data => {
+    socket.broadcast.emit('SERVER_SEND_POSITION' , data);
+  });
+
+  /* ============================== */
   /* Socket with MANAGE APP */
 
   db.ref('users').on('child_added' , user => {
@@ -146,6 +152,7 @@ io.on('connection' , socket => {
     socket.emit('SEND_NOT_PICKUP_RIDER', rider);
   });
 
+  // Handle disconnect with socket
   socket.on('disconnect' , () => {
     const {idDriver} = socket;
     if(idDriver) {
