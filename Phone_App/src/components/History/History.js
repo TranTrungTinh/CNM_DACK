@@ -1,18 +1,60 @@
 import React, { Component } from 'react';
 // import css
 import './History.css';
-import review_png from '../../images/review.png';
+//components
+import Complete from './Complete/Complete';
+import NotPickUp from './NotPickup/NotPickup';
+//redux
+import { connect } from 'react-redux';
 
-export default class History extends Component {
-  render() {
+class History extends Component {
+  constructor(props) {
+    super(props);
+    this.showComplete = this.showComplete.bind(this);
+    this.showNotPickUp = this.showNotPickUp.bind(this);
+  }
+
+  showComplete(data , index) {
+    const { address } = data;
     return (
-      <div id="history_container">
-        <div id="history_title">
-          <img src={review_png} alt="This is history of number phone" />
-          <p>Review history ordered car</p>
+      <Complete 
+        key={index}
+        address={address}
+      />
+    );
+  }
+
+  showNotPickUp(data , index) {
+    const { address } = data;
+    return (
+      <NotPickUp 
+        key={index}
+        address={address}
+      />
+    );
+  }
+
+  render() {
+    const { completes , notpickup } = this.props;
+    return (
+      <div className="row list-state">
+        <div className="waiting_container col" >
+          <div className="list-group">
+            { completes.map(this.showComplete) }
+          </div>
         </div>
-        <ul className="list-group"></ul>
+        <div className="waiting_container col" >
+          <div className="list-group">
+          { notpickup.map(this.showNotPickUp) }            
+          </div>
+        </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  completes: state.completes,
+  notpickup: state.notpickup
+});
+export default connect(mapStateToProps)(History);

@@ -55,6 +55,14 @@ class GoogleMap extends Component {
       });
     }); 
 
+    socket.on('SEVER_ASSIGN_DRIVER' , riderData => {
+      socket.emit('DRIVER_ACCEPT', {idDriver , idRider: riderData.id});
+      this.props.showControll();
+      const rMarker = riderMarker(riderData , map);
+      const direction = drawDirection(dMarker , rMarker, map);
+      this.setState({idRider: riderData.id , rMarker , direction});
+    })
+
     // Thong bao khi co driver da nhan khach
     socket.on('CLOSE_NOTIFICATION', () => {
       swal({
@@ -69,7 +77,8 @@ class GoogleMap extends Component {
   componentWillMount() {
     // remove listener with socket.io
     socket.off('SEVER_SEND_RIDER');
-    socket.off('CLOSE_NOTIFICATION');    
+    socket.off('CLOSE_NOTIFICATION');
+    socket.off('SEVER_ASSIGN_DRIVER');    
   }
 
   openClickMap() {

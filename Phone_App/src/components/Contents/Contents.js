@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-
+//redux
+import {connect} from 'react-redux';
+import * as actionCreators from '../../redux/action/actionCreators';
 // import library
 import swal from 'sweetalert';
 import axios from 'axios';
@@ -8,7 +10,7 @@ import {geocodeByAddress , getLatLng} from 'react-places-autocomplete';
 // import css
 import './Contents.css';
 
-export default class Contents extends Component {
+class Contents extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +47,14 @@ export default class Contents extends Component {
       this.refs.phone.value = '';
       this.refs.phone.focus();
     });
-  }
+    // get history
+    axios.post('/api/history' , {phone})
+    .then(({ data }) => {
+      const {completes , notpickups} = data;
+      this.props.completeHistory(completes);
+      this.props.notpickupHistory(notpickups);
+    })
+  } 
 
   handleAddressInput(address) {
     this.setState({ address });
@@ -127,3 +136,4 @@ export default class Contents extends Component {
     );
   }
 }
+export default connect(null , actionCreators)(Contents);

@@ -13,10 +13,6 @@ class Driver {
     return arrDrivers;
   }
 
-  static addUser(objUser) {
-    db.ref('users').push(objUser);
-  }
-
   static async logIn(rawUsername , rawPassword) {
     const drivers = await db.ref('cars').once('value');
     let isDriver = null;
