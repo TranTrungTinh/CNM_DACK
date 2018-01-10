@@ -14,18 +14,16 @@ git clone https://github.com/TranTrungTinh/CNM_DACK.git
 
 ```
 My_Project
-|___App_Phone_Staff
-|___App_GPS_Staff
-|___App_Manage_Staff
-``` 
+|___Driver_App
+|___GPS_App
+|___Manage_App
+|___Phone_App
 
-```
-
-``` 
 
 ## Usage
 ```
-
+yarn/npm install
+yarn/npm start
 ```
 
   </content>
